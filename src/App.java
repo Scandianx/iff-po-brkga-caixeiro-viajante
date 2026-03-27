@@ -1,5 +1,7 @@
 // Filipe Scandiani Soave, Igor Almenara, Raphael Castelar
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -33,6 +35,7 @@ public class App {
 
             // Exibe na tela um resumo organizado da execucao.
             imprimirResumoExecucao(caminhoArquivo, instancia, parametros, resultado);
+            salvarSolucaoEmArquivo(resultado);
         } catch (IllegalArgumentException | IOException excecao) {
             // Qualquer problema de leitura ou validacao da entrada e informado ao usuario.
             System.err.println("Erro: " + excecao.getMessage());
@@ -75,5 +78,25 @@ public class App {
         System.out.println("Melhor geracao: " + resultado.getMelhorGeracao());
         System.out.println("Geracoes executadas: " + resultado.getGeracoesExecutadas());
         System.out.println("Tempo de execucao (ms): " + resultado.getTempoExecucaoMillis());
+    }
+
+    private static void salvarSolucaoEmArquivo(ResultadoBRKGA resultado) throws IOException {
+        DecimalFormatSymbols simbolos = DecimalFormatSymbols.getInstance(Locale.US);
+        DecimalFormat formatador = new DecimalFormat("0.###", simbolos);
+
+        int[] rota = resultado.getMelhorSolucao().getRota();
+        StringBuilder rotaFormatada = new StringBuilder();
+        for (int indice = 0; indice < rota.length; indice++) {
+            if (indice > 0) {
+                rotaFormatada.append(' ');
+            }
+            rotaFormatada.append(rota[indice]);
+        }
+
+        String conteudo = formatador.format(resultado.getMelhorSolucao().getCustoTotal())
+            + System.lineSeparator()
+            + rotaFormatada;
+
+        Files.writeString(Path.of("examples", "solucao.txt"), conteudo);
     }
 }
