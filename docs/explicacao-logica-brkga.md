@@ -15,7 +15,7 @@ Nao entra no escopo:
 
 Essa funcao cria um individuo novo e totalmente aleatorio.
 
-Traduzindo sem enfeite:
+Em termos simples:
 
 - um individuo e uma possivel resposta
 - essa resposta ainda nao esta em forma de rota
@@ -87,7 +87,7 @@ public static IndividuoBRKGA criarAleatorio(int tamanhoCromossomo, Random gerado
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Pensa assim:
 
@@ -149,7 +149,7 @@ public List<IndividuoBRKGA> gerarPopulacaoInicial() {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Aqui o algoritmo monta o seu "time inicial".
 
@@ -214,9 +214,9 @@ public SolucaoPCVS decodificarCromossomo(double[] cromossomo) {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
-Aqui acontece a magia das random keys.
+Aqui acontece a etapa central das random keys.
 
 Suponha que as cidades internas sejam:
 
@@ -298,7 +298,7 @@ public double calcularFitness(int[] rota) {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Se a rota for:
 
@@ -340,7 +340,7 @@ private void avaliarIndividuo(IndividuoBRKGA individuo) {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Um individuo nasce so com cromossomo.
 So que cromossomo sozinho nao diz se ele e bom ou ruim.
@@ -370,7 +370,7 @@ public List<IndividuoBRKGA> selecionarElite(List<IndividuoBRKGA> populacao) {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Como a populacao ja esta ordenada do melhor para o pior, selecionar elite e facil:
 
@@ -413,7 +413,7 @@ public List<IndividuoBRKGA> gerarMutantes() {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Se o algoritmo so mantivesse elite e filhos dos mesmos pais, ele poderia ficar viciado nas mesmas ideias.
 
@@ -464,7 +464,7 @@ public IndividuoBRKGA crossoverEnviesado(IndividuoBRKGA paiElite, IndividuoBRKGA
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Aqui funciona assim:
 
@@ -604,7 +604,7 @@ public List<IndividuoBRKGA> atualizarPopulacao(List<IndividuoBRKGA> populacaoAtu
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Essa funcao pega a populacao velha e fabrica a populacao nova.
 
@@ -614,7 +614,7 @@ O jeito mais facil de entender e pensar assim:
 - o algoritmo nao quer jogar fora tudo
 - mas tambem nao quer copiar tudo igual
 
-Entao ele monta a nova populacao em 3 pedaços:
+Entao ele monta a nova populacao em 3 partes:
 
 1. `elite`
 2. `mutantes`
@@ -760,7 +760,7 @@ Isso e importante porque na proxima geracao ele vai precisar:
 - saber quem e elite
 - saber quem e o melhor individuo
 
-### Resumindo sem enrolacao
+### Resumo
 
 Essa funcao faz exatamente isto:
 
@@ -789,7 +789,7 @@ public IndividuoBRKGA recuperarMelhorSolucao(List<IndividuoBRKGA> populacao) {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
 Como a populacao sempre e ordenada do menor fitness para o maior:
 
@@ -839,9 +839,9 @@ public ResultadoBRKGA executar() {
 }
 ```
 
-### Explicacao brutalmente clara
+### Explicacao
 
-Essa funcao e o maestro da orquestra.
+Essa funcao coordena o processo completo.
 
 Ela faz:
 
@@ -877,7 +877,7 @@ Se voce precisar explicar o BRKGA em 30 segundos, pode falar assim:
 
 ## 13. Frases prontas para apresentacao
 
-Se quiser falar de forma bem clara durante a apresentacao, aqui vao frases prontas:
+Se quiser usar frases curtas durante a apresentacao, aqui vao algumas sugestoes:
 
 - `criarAleatorio`: "Aqui o algoritmo so cria um candidato novo, preenchendo o cromossomo com numeros aleatorios."
 - `decodificarCromossomo`: "Aqui os numeros aleatorios deixam de ser so numeros e passam a definir a ordem das cidades."
@@ -887,3 +887,4 @@ Se quiser falar de forma bem clara durante a apresentacao, aqui vao frases pront
 - `crossoverEnviesado`: "Aqui nasce um filho misturando dois pais, mas com maior chance de copiar os genes do pai elite."
 - `atualizarPopulacao`: "Aqui a nova geracao e montada com elite, mutantes e filhos."
 - `executar`: "Aqui fica o laco principal que repete a evolucao ate o fim."
+
