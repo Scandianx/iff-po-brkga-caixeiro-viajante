@@ -26,6 +26,51 @@ No BRKGA, o cromossomo nao guarda diretamente a ordem das cidades.
 Ele guarda chaves numericas.
 Depois, o algoritmo ordena essas chaves para descobrir qual cidade vem antes e qual vem depois.
 
+### O que e um gene aqui
+
+Muita gente trava nessa palavra, entao vamos deixar isso seco e claro:
+
+- cromossomo = o vetor inteiro
+- gene = uma unica posicao desse vetor
+
+Exemplo:
+
+```text
+[0.82, 0.15, 0.47, 0.03]
+```
+
+Aqui:
+
+- `0.82` e um gene
+- `0.15` e outro gene
+- `0.47` e outro gene
+- `0.03` e outro gene
+
+Ou seja, gene e simplesmente um valor individual dentro do cromossomo.
+
+Neste projeto, cada gene representa a `random key` associada a uma cidade interna.
+
+Se as cidades internas forem:
+
+```text
+[2, 3, 4, 5]
+```
+
+Entao pode ficar assim:
+
+```text
+cidade 2 -> gene 0.82
+cidade 3 -> gene 0.15
+cidade 4 -> gene 0.47
+cidade 5 -> gene 0.03
+```
+
+Entao, falando de forma bem direta:
+
+- cada cidade interna tem um gene correspondente
+- o valor desse gene nao e a cidade
+- o valor desse gene e a chave que vai decidir a posicao da cidade quando tudo for ordenado
+
 ### Codigo
 
 ```java
@@ -448,6 +493,77 @@ A ideia e simples:
 
 Entao o filho nao e uma copia exata.
 Ele e uma mistura, mas uma mistura puxando para o melhor lado.
+
+### O que significa "herdar um gene"
+
+Aqui esta o ponto principal:
+
+herdar um gene nao significa herdar uma cidade pronta na rota.
+
+Significa copiar o valor numerico daquela posicao do cromossomo.
+
+Exemplo:
+
+```text
+Pai elite:     [0.82, 0.15, 0.47, 0.03]
+Pai nao-elite: [0.40, 0.91, 0.11, 0.72]
+```
+
+Agora imagine que o filho vai sendo montado posicao por posicao.
+
+Na posicao 0:
+
+- se herdar do elite, pega `0.82`
+- se herdar do nao-elite, pega `0.40`
+
+Na posicao 1:
+
+- se herdar do elite, pega `0.15`
+- se herdar do nao-elite, pega `0.91`
+
+E assim por diante.
+
+Entao um filho poderia ficar assim:
+
+```text
+[0.82, 0.15, 0.11, 0.03]
+```
+
+Percebe?
+O filho nao herdou "trechos da rota final".
+Ele herdou valores numericos de certas posicoes.
+
+So depois, quando o cromossomo do filho for decodificado, e que esses numeros vao virar uma rota.
+
+### O que acontece na pratica quando ele herda um gene
+
+Quando o filho herda um gene de uma posicao, ele herda a chave daquela cidade interna naquela mesma posicao.
+
+Exemplo:
+
+- suponha que a posicao `0` do cromossomo corresponde a cidade `2`
+- se o filho herdar o gene `0.82` nessa posicao, a cidade `2` passa a ter chave `0.82` no filho
+
+Depois, quando todas as cidades forem ordenadas pelas chaves:
+
+- se essa chave for pequena, a cidade tende a aparecer mais cedo na rota
+- se essa chave for grande, a cidade tende a aparecer mais tarde
+
+Entao herdar um gene influencia indiretamente a rota final.
+
+Nao e:
+
+- "copiei a cidade 2 para a terceira posicao da rota"
+
+E sim:
+
+- "copiei a chave da cidade 2"
+- "essa chave depois vai participar da ordenacao"
+- "essa ordenacao e que define a rota final"
+
+Se quiser resumir em uma frase:
+
+> Herdar um gene significa copiar a random key de uma cidade interna naquela posicao do cromossomo. Essa chave depois participa da ordenacao que monta a rota.
 
 ## 9. `atualizarPopulacao`
 

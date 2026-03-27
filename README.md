@@ -118,6 +118,12 @@ Para testar uma instancia maior:
 java -cp bin App examples\pcvs_exemplo_maior.txt 120 500 0.20 0.15 0.70 12345
 ```
 
+Para gerar uma instancia nova no mesmo formato do projeto:
+
+```powershell
+java -cp bin GeradorInstanciaApp 500 1 1000 12345 examples\pcvs_500.txt
+```
+
 ## Saida esperada
 
 O programa informa:
@@ -132,4 +138,5 @@ O programa informa:
 
 - `docs/ESTRATEGIA_BRKGA.md`: explicacao detalhada da estrategia usada
 - `docs/EXEMPLO_EXECUCAO.md`: exemplo comentado passo a passo
+- `docs/GERADOR_INSTANCIA.md`: como gerar instancias grandes para teste
 - `docs/MODELO_PDF.md`: base textual para o relatorio em PDF
