@@ -1,0 +1,22 @@
+# Arquivos compilados Java
+*.class
+
+# Pasta de saida da compilacao
+bin/
+
+# Logs
+*.log
+
+# Arquivos temporarios do sistema
+.DS_Store
+Thumbs.db
+
+# Configuracoes locais de IDE
+.classpath
+.project
+.settings/
+.idea/
+
+# Configuracoes locais do VS Code
+.vscode/*
+!.vscode/settings.json
