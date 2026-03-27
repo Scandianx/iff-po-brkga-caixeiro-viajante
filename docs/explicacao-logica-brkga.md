@@ -490,27 +490,173 @@ public List<IndividuoBRKGA> atualizarPopulacao(List<IndividuoBRKGA> populacaoAtu
 
 ### Explicacao brutalmente clara
 
-Essa funcao faz a receita completa da nova geracao:
+Essa funcao pega a populacao velha e fabrica a populacao nova.
 
-1. pega a elite e preserva
-2. cria mutantes aleatorios
-3. gera filhos por crossover
-4. junta todo mundo
-5. ordena do melhor para o pior
+O jeito mais facil de entender e pensar assim:
 
-Ou seja, a nova populacao nasce com tres grupos:
+- a populacao atual ja esta ordenada do melhor para o pior
+- o algoritmo nao quer jogar fora tudo
+- mas tambem nao quer copiar tudo igual
 
-- os melhores do passado
-- individuos novos aleatorios
-- filhos gerados a partir da populacao atual
+Entao ele monta a nova populacao em 3 pedaços:
 
-Essa mistura e importante porque equilibra tres coisas:
+1. `elite`
+2. `mutantes`
+3. `filhos`
 
-- memoria do que ja deu certo
-- exploracao de ideias novas
-- combinacao de caracteristicas promissoras
+### Passo 1: separar a elite
 
-Se resumir ao maximo, o BRKGA evolui repetindo exatamente essa funcao varias vezes.
+```java
+List<IndividuoBRKGA> elite = selecionarElite(populacaoAtual);
+```
+
+Aqui ele pega os melhores individuos da populacao atual.
+
+Se a populacao tiver 10 individuos e a elite for 20%, ele pega os 2 melhores.
+
+Entao:
+
+- elite = melhores individuos
+- eles sobrevivem direto para a proxima geracao
+
+### Passo 2: separar quem nao e elite
+
+```java
+List<IndividuoBRKGA> naoElite = new ArrayList<>(
+    populacaoAtual.subList(parametros.calcularQuantidadeElite(), populacaoAtual.size())
+);
+```
+
+Aqui ele pega o resto da populacao.
+
+Se a elite eram os 2 melhores de uma populacao com 10, entao `naoElite` vai ser os outros 8.
+
+Esse grupo nao e lixo.
+Ele ainda serve para participar do crossover.
+So nao recebe o privilegio de ser copiado direto.
+
+### Passo 3: criar a nova populacao vazia
+
+```java
+List<IndividuoBRKGA> novaPopulacao = new ArrayList<>();
+```
+
+Aqui o algoritmo prepara a "caixa" onde vai montar a proxima geracao.
+
+### Passo 4: copiar a elite direto
+
+```java
+novaPopulacao.addAll(elite);
+```
+
+Aqui nao tem sorteio, nao tem mistura, nao tem mudanca.
+
+Os melhores individuos entram do jeito que ja estavam.
+
+Traduzindo:
+
+- "esses caras ja provaram que sao bons"
+- "entao eu nao vou perder eles"
+
+### Passo 5: adicionar mutantes
+
+```java
+novaPopulacao.addAll(gerarMutantes());
+```
+
+Agora o algoritmo coloca individuos novos e aleatorios.
+
+Por que ele faz isso?
+
+- para nao deixar a populacao toda parecida
+- para testar caminhos novos
+- para evitar ficar preso sempre nas mesmas combinacoes
+
+### Passo 6: completar com filhos
+
+```java
+for (int indiceFilho = 0; indiceFilho < parametros.calcularQuantidadeFilhos(); indiceFilho++) {
+    IndividuoBRKGA paiElite = elite.get(geradorAleatorio.nextInt(elite.size()));
+    IndividuoBRKGA paiNaoElite = naoElite.get(geradorAleatorio.nextInt(naoElite.size()));
+    novaPopulacao.add(crossoverEnviesado(paiElite, paiNaoElite));
+}
+```
+
+Aqui esta a parte que costuma confundir.
+
+O algoritmo faz assim:
+
+- escolhe 1 pai aleatorio dentro da elite
+- escolhe 1 pai aleatorio dentro dos nao-elite
+- cruza os dois
+- gera 1 filho
+- repete isso varias vezes
+
+Repara numa coisa importante:
+
+- o pai elite nao e sempre o melhor de todos
+- ele e um sorteado dentre os melhores
+- o pai nao-elite tambem e sorteado dentre o resto
+
+Entao o algoritmo mistura:
+
+- qualidade, vindo da elite
+- diversidade, vindo do nao-elite
+
+### Exemplo concreto
+
+Imagina:
+
+- tamanho da populacao = 10
+- elite = 2 individuos
+- mutantes = 2 individuos
+
+Entao faltam:
+
+- `10 - 2 - 2 = 6` individuos
+
+Esses 6 que faltam serao filhos.
+
+No final, a nova populacao fica assim:
+
+- 2 individuos elite copiados
+- 2 mutantes aleatorios
+- 6 filhos gerados por crossover
+
+Total:
+
+- 10 individuos de novo
+
+Ou seja, a populacao nao cresce e nao diminui.
+Ela so e reconstruida.
+
+### Passo 7: ordenar a nova populacao
+
+```java
+novaPopulacao.sort(Comparator.naturalOrder());
+return novaPopulacao;
+```
+
+Depois que a nova populacao esta pronta, o algoritmo ordena tudo de novo do melhor para o pior.
+
+Isso e importante porque na proxima geracao ele vai precisar:
+
+- saber quem e elite
+- saber quem e o melhor individuo
+
+### Resumindo sem enrolacao
+
+Essa funcao faz exatamente isto:
+
+- salva os melhores
+- injeta individuos aleatorios
+- cria filhos misturando elite com nao-elite
+- junta tudo
+- ordena de novo
+
+Se voce quiser uma frase bem simples, pode pensar assim:
+
+> `atualizarPopulacao` e a funcao que desmonta a geracao antiga e monta a proxima, mantendo os melhores, criando novidade e produzindo novos filhos.
 
 ## 10. `recuperarMelhorSolucao`
 
