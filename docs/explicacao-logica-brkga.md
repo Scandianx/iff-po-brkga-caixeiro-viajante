@@ -71,6 +71,71 @@ Entao, falando de forma bem direta:
 - o valor desse gene nao e a cidade
 - o valor desse gene e a chave que vai decidir a posicao da cidade quando tudo for ordenado
 
+### Como a cidade fica associada a random key
+
+A associacao e feita pela `posicao`.
+
+Isso e o ponto principal.
+
+Se o vetor de cidades internas for:
+
+```text
+[2, 3, 4, 5]
+```
+
+e o cromossomo for:
+
+```text
+[0.82, 0.15, 0.47, 0.03]
+```
+
+entao a correspondencia fica:
+
+```text
+indice 0 -> cidade 2 -> chave 0.82
+indice 1 -> cidade 3 -> chave 0.15
+indice 2 -> cidade 4 -> chave 0.47
+indice 3 -> cidade 5 -> chave 0.03
+```
+
+Ou seja:
+
+- a posicao `0` do cromossomo corresponde a cidade `2`
+- a posicao `1` corresponde a cidade `3`
+- a posicao `2` corresponde a cidade `4`
+- a posicao `3` corresponde a cidade `5`
+
+Entao o algoritmo nao "descobre" depois qual chave pertence a qual cidade.
+Essa ligacao ja existe desde o momento em que o cromossomo e criado.
+
+O que muda ao longo do processo e apenas o valor da chave em cada posicao.
+A cidade associada aquela posicao continua sendo a mesma.
+
+### Por que usar random keys
+
+O BRKGA usa random keys porque essa representacao facilita muito o trabalho do algoritmo genetico.
+
+Se a rota fosse armazenada diretamente como uma permutacao de cidades, o crossover seria mais delicado.
+Seria facil gerar filhos invalidos, com:
+
+- cidade repetida
+- cidade faltando
+- ordem quebrada
+
+Com random keys, isso fica mais simples:
+
+- cada cidade interna sempre continua existindo exatamente uma vez
+- o cromossomo continua sendo apenas um vetor de numeros reais
+- crossover entre dois cromossomos fica facil de implementar
+- depois basta ordenar as chaves para obter uma rota valida
+
+Entao a vantagem nao e que a random key "resolve o problema sozinha".
+A vantagem e que ela oferece uma representacao simples para:
+
+- cruzar individuos
+- manter solucao valida
+- transformar facilmente o cromossomo em rota
+
 ### Codigo
 
 ```java
@@ -181,6 +246,33 @@ Transforma o cromossomo de random keys em uma rota de verdade.
 Essa e uma das funcoes mais importantes do BRKGA.
 Sem ela, o algoritmo so teria um monte de numeros aleatorios sem significado pratico.
 
+### Como a associacao e usada na decodificacao
+
+Na decodificacao, o algoritmo percorre o cromossomo por indice.
+
+Em cada indice:
+
+- pega a cidade interna daquela posicao
+- pega a random key da mesma posicao
+- junta as duas coisas em um par `cidade + chave`
+
+No codigo, e exatamente isso que acontece:
+
+```java
+for (int indice = 0; indice < cromossomo.length; indice++) {
+    cidadesComChaves.add(new CidadeChave(cidadesInternas[indice], cromossomo[indice]));
+}
+```
+
+Esse trecho significa:
+
+- `cidadesInternas[indice]` = qual cidade esta sendo tratada
+- `cromossomo[indice]` = qual e a chave dessa cidade
+
+Depois, o algoritmo ordena esses pares pela chave.
+Nao ordena o vetor de cidades diretamente.
+Ele ordena os pares `cidade + chave`, preservando a relacao entre os dois.
+
 ### Codigo
 
 ```java
@@ -239,6 +331,17 @@ O algoritmo junta cada cidade com sua chave:
 5 -> 0.03
 ```
 
+Isso nao e uma etapa opcional ou apenas ilustrativa.
+E exatamente a estrutura logica usada pelo algoritmo:
+
+- cidade `2` continua ligada a `0.82`
+- cidade `3` continua ligada a `0.15`
+- cidade `4` continua ligada a `0.47`
+- cidade `5` continua ligada a `0.03`
+
+Quando as chaves sao ordenadas, o que muda e a ordem de leitura dessas duplas.
+Nao muda a associacao original entre cidade e chave.
+
 Agora ele ordena pela chave:
 
 ```text
@@ -272,6 +375,7 @@ Essa ideia e importante porque:
 - crossover entre numeros e facil
 - mexer em permutacao diretamente e mais chato
 - random keys simplificam a representacao
+- a ordenacao sempre gera uma permutacao valida das cidades internas
 
 ## 4. `calcularFitness`
 

@@ -59,6 +59,8 @@ BRKGA significa Biased Random-Key Genetic Algorithm. Nessa abordagem, cada indiv
 
 Cada individuo foi representado por um vetor de numeros reais no intervalo `[0, 1)`. Como a cidade `1` e fixa, o cromossomo representa apenas as cidades internas, isto e, de `2` ate `n`.
 
+A associacao entre cidade e random key e feita pela posicao no vetor. Se as cidades internas forem `[2, 3, 4, 5]` e o cromossomo for `[0.82, 0.15, 0.47, 0.03]`, entao a cidade `2` fica associada a `0.82`, a cidade `3` a `0.15`, a cidade `4` a `0.47` e a cidade `5` a `0.03`.
+
 ### 6.2 Decodificacao
 
 As cidades internas sao associadas aos genes e ordenadas pelas random keys. A rota final e montada no formato:
@@ -66,6 +68,8 @@ As cidades internas sao associadas aos genes e ordenadas pelas random keys. A ro
 ```text
 1 -> cidades ordenadas -> 1
 ```
+
+Essa representacao foi escolhida porque facilita o crossover entre individuos sem quebrar a validade da solucao. Em vez de cruzar diretamente uma permutacao de cidades, o algoritmo cruza vetores numericos e depois ordena as cidades pelas chaves, gerando uma rota valida de forma simples.
 
 ### 6.3 Fitness
 
