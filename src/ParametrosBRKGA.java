@@ -2,11 +2,11 @@
 public class ParametrosBRKGA {
 
     // Valores padrao escolhidos para manter a execucao simples e funcional.
-    private static final int TAMANHO_POPULACAO_PADRAO = 80;
-    private static final int QUANTIDADE_GERACOES_PADRAO = 3000;
-    private static final double PERCENTUAL_ELITE_PADRAO = 0.20;
-    private static final double PERCENTUAL_MUTANTES_PADRAO = 0.15;
-    private static final double PROBABILIDADE_HERANCA_ELITE_PADRAO = 0.70;
+    private static final int TAMANHO_POPULACAO_PADRAO = 400;
+    private static final int QUANTIDADE_GERACOES_PADRAO = 10000;
+    private static final double PERCENTUAL_ELITE_PADRAO = 0.15;
+    private static final double PERCENTUAL_MUTANTES_PADRAO = 0.22;
+    private static final double PROBABILIDADE_HERANCA_ELITE_PADRAO = 0.75;
     private static final long SEMENTE_PADRAO = 12345L;
 
     private final int tamanhoPopulacao;
